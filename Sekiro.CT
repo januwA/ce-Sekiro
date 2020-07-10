@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="31">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>29</ID>
+      <Description>"hp base"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(hp_INJECT,sekiro.exe,C1 8B 00 89 83 30 01 00 00)
+alloc(newmem,$1000,"sekiro.exe"+BBF3BE)
+alloc(pHp,$8)
+
+label(code)
+label(player)
+label(return)
+
+pHp:
+  dq 0
+
+newmem:
+  pushfq
+  cmp [rbx+18],0
+  je player
+
+  // 敌人
+  cmp eax,[rbx+134] // 避免自动秒，要开启注释这两行
+  je code
+
+  mov eax,0
+  jmp code
+
+player:
+  mov [pHp],rbx
+  mov eax,[rbx+134]
+  jmp code
+
+code:
+  popfq
+  mov [rbx+130],eax
+  jmp return
+
+hp_INJECT+03:
+  jmp newmem
+  nop
+return:
+registersymbol(hp_INJECT pHp)
+
+[DISABLE]
+hp_INJECT+03:
+  db 89 83 30 01 00 00
+
+unregistersymbol(hp_INJECT pHp)
+dealloc(newmem)
+dealloc(pHp)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sekiro.exe"+BBF3BE
+
+"sekiro.exe"+BBF397: 48 81 C1 34 01 00 00           -  add rcx,00000134
+"sekiro.exe"+BBF39E: C7 44 24 30 00 00 00 00        -  mov [rsp+30],00000000
+"sekiro.exe"+BBF3A6: 85 D2                          -  test edx,edx
+"sekiro.exe"+BBF3A8: 79 07                          -  jns sekiro.exe+BBF3B1
+"sekiro.exe"+BBF3AA: 48 8D 44 24 30                 -  lea rax,[rsp+30]
+"sekiro.exe"+BBF3AF: EB 0B                          -  jmp sekiro.exe+BBF3BC
+"sekiro.exe"+BBF3B1: 3B 11                          -  cmp edx,[rcx]
+"sekiro.exe"+BBF3B3: 48 8D 44 24 38                 -  lea rax,[rsp+38]
+"sekiro.exe"+BBF3B8: 48 0F 4F C1                    -  cmovg rax,rcx
+"sekiro.exe"+BBF3BC: 8B 00                          -  mov eax,[rax]
+// ---------- INJECTING HERE ----------
+"sekiro.exe"+BBF3BE: 89 83 30 01 00 00              -  mov [rbx+00000130],eax
+// ---------- DONE INJECTING  ----------
+"sekiro.exe"+BBF3C4: 85 C0                          -  test eax,eax
+"sekiro.exe"+BBF3C6: 7F 1A                          -  jg sekiro.exe+BBF3E2
+"sekiro.exe"+BBF3C8: 48 8B CB                       -  mov rcx,rbx
+"sekiro.exe"+BBF3CB: E8 C0 F8 FF FF                 -  call sekiro.exe+BBEC90
+"sekiro.exe"+BBF3D0: 84 C0                          -  test al,al
+"sekiro.exe"+BBF3D2: 74 0E                          -  je sekiro.exe+BBF3E2
+"sekiro.exe"+BBF3D4: 85 FF                          -  test edi,edi
+"sekiro.exe"+BBF3D6: 7E 0A                          -  jle sekiro.exe+BBF3E2
+"sekiro.exe"+BBF3D8: C7 83 30 01 00 00 01 00 00 00  -  mov [rbx+00000130],00000001
+"sekiro.exe"+BBF3E2: 48 8B 5C 24 40                 -  mov rbx,[rsp+40]
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>30</ID>
+          <Description>"hp"</Description>
+          <LastState Value="400" RealAddress="7FF4F66E86B0"/>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[pHp]+130</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>40</ID>
+      <Description>"99999金币"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(gold_INJECT,sekiro.exe,00 89 41 7C C3 CC)
+alloc(newmem,$1000,"sekiro.exe"+66B553)
+
+alloc(pGold,$8)
+
+label(code)
+label(return)
+
+pGold:
+  dq 0
+
+newmem:
+  mov eax, #99999
+  mov [pGold],rcx
+code:
+  mov [rcx+7C],eax
+  ret 
+  int 3 
+  jmp return
+
+gold_INJECT+01:
+  jmp newmem
+return:
+registersymbol(gold_INJECT pGold)
+
+[DISABLE]
+gold_INJECT+01:
+  db 89 41 7C C3 CC
+
+unregistersymbol(gold_INJECT pGold)
+dealloc(newmem)
+dealloc(pGold)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sekiro.exe"+66B553
+
+"sekiro.exe"+66B52E: 79 0B                    -  jns sekiro.exe+66B53B
+"sekiro.exe"+66B530: 48 8D 44 24 08           -  lea rax,[rsp+08]
+"sekiro.exe"+66B535: 8B 00                    -  mov eax,[rax]
+"sekiro.exe"+66B537: 89 41 7C                 -  mov [rcx+7C],eax
+"sekiro.exe"+66B53A: C3                       -  ret 
+"sekiro.exe"+66B53B: 3B 15 BF 58 20 02        -  cmp edx,[sekiro.exe+2870E00]
+"sekiro.exe"+66B541: 4C 8D 05 B8 58 20 02     -  lea r8,[sekiro.exe+2870E00]
+"sekiro.exe"+66B548: 48 8D 44 24 10           -  lea rax,[rsp+10]
+"sekiro.exe"+66B54D: 49 0F 4F C0              -  cmovg rax,r8
+"sekiro.exe"+66B551: 8B 00                    -  mov eax,[rax]
+// ---------- INJECTING HERE ----------
+"sekiro.exe"+66B553: 89 41 7C                 -  mov [rcx+7C],eax
+"sekiro.exe"+66B556: C3                       -  ret 
+"sekiro.exe"+66B557: CC                       -  int 3 
+// ---------- DONE INJECTING  ----------
+"sekiro.exe"+66B558: CC                       -  int 3 
+"sekiro.exe"+66B559: CC                       -  int 3 
+"sekiro.exe"+66B55A: CC                       -  int 3 
+"sekiro.exe"+66B55B: CC                       -  int 3 
+"sekiro.exe"+66B55C: CC                       -  int 3 
+"sekiro.exe"+66B55D: CC                       -  int 3 
+"sekiro.exe"+66B55E: CC                       -  int 3 
+"sekiro.exe"+66B55F: CC                       -  int 3 
+"sekiro.exe"+66B560: 48 89 74 24 18           -  mov [rsp+18],rsi
+"sekiro.exe"+66B565: 57                       -  push rdi
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>47</ID>
+          <Description>"gold"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[pGold]+7c</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>48</ID>
+          <Description>"技能点"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[pGold]+B68</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>51</ID>
+      <Description>"无消耗)无IO"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+aobscanmodule(fdgrr_INJECT,sekiro.exe,E8 C8 6E 48 00)
+registersymbol(fdgrr_INJECT)
+
+fdgrr_INJECT:
+  db 90 90 90 90 90
+
+
+[DISABLE]
+fdgrr_INJECT:
+  db E8 C8 6E 48 00
+
+unregistersymbol(fdgrr_INJECT)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sekiro.exe"+79E8E3
+
+"sekiro.exe"+79E8C3: 8B FE                    -  mov edi,esi
+"sekiro.exe"+79E8C5: 41 C7 45 00 01 00 00 00  -  mov [r13+00],00000001
+"sekiro.exe"+79E8CD: EB 0F                    -  jmp sekiro.exe+79E8DE
+"sekiro.exe"+79E8CF: 75 0D                    -  jne sekiro.exe+79E8DE
+"sekiro.exe"+79E8D1: 33 C0                    -  xor eax,eax
+"sekiro.exe"+79E8D3: 41 89 07                 -  mov [r15],eax
+"sekiro.exe"+79E8D6: 41 C6 06 01              -  mov byte ptr [r14],01
+"sekiro.exe"+79E8DA: 41 89 45 00              -  mov [r13+00],eax
+"sekiro.exe"+79E8DE: 8B D7                    -  mov edx,edi
+"sekiro.exe"+79E8E0: 48 8B CB                 -  mov rcx,rbx
+// ---------- INJECTING HERE ----------
+"sekiro.exe"+79E8E3: E8 C8 6E 48 00           -  call sekiro.exe+C257B0
+// ---------- DONE INJECTING  ----------
+"sekiro.exe"+79E8E8: 8B DF                    -  mov ebx,edi
+"sekiro.exe"+79E8EA: 41 2B DC                 -  sub ebx,r12d
+"sekiro.exe"+79E8ED: 48 8D 54 24 78           -  lea rdx,[rsp+78]
+"sekiro.exe"+79E8F2: 48 8D 4C 24 28           -  lea rcx,[rsp+28]
+"sekiro.exe"+79E8F7: E8 44 71 FF FF           -  call sekiro.exe+795A40
+"sekiro.exe"+79E8FC: 48 8B D0                 -  mov rdx,rax
+"sekiro.exe"+79E8FF: 44 8B C3                 -  mov r8d,ebx
+"sekiro.exe"+79E902: 48 8B CD                 -  mov rcx,rbp
+"sekiro.exe"+79E905: E8 46 22 00 00           -  call sekiro.exe+7A0B50
+"sekiro.exe"+79E90A: 41 80 3E 00              -  cmp byte ptr [r14],00
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>55</ID>
+      <Description>"99材料"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ 打开关闭背包触发
+}
+
+[ENABLE]
+
+aobscanmodule(readas_INJECT,sekiro.exe,8B 41 08 89 42 08 8B 41 0C 89 42 0C C3) // should be unique
+alloc(newmem,$1000,"sekiro.exe"+C256CF)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  mov [rcx+08],#99
+  mov eax,[rcx+08]
+  mov [rdx+08],eax
+  jmp return
+
+readas_INJECT:
+  jmp newmem
+  nop
+return:
+registersymbol(readas_INJECT)
+
+[DISABLE]
+
+readas_INJECT:
+  db 8B 41 08 89 42 08
+
+unregistersymbol(readas_INJECT)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: "sekiro.exe"+C256CF
+
+"sekiro.exe"+C256BC: CC                          -  int 3 
+"sekiro.exe"+C256BD: CC                          -  int 3 
+"sekiro.exe"+C256BE: CC                          -  int 3 
+"sekiro.exe"+C256BF: CC                          -  int 3 
+"sekiro.exe"+C256C0: 48 85 D2                    -  test rdx,rdx
+"sekiro.exe"+C256C3: 74 16                       -  je sekiro.exe+C256DB
+"sekiro.exe"+C256C5: 8B 01                       -  mov eax,[rcx]
+"sekiro.exe"+C256C7: 89 02                       -  mov [rdx],eax
+"sekiro.exe"+C256C9: 8B 41 04                    -  mov eax,[rcx+04]
+"sekiro.exe"+C256CC: 89 42 04                    -  mov [rdx+04],eax
+// ---------- INJECTING HERE ----------
+"sekiro.exe"+C256CF: 8B 41 08                    -  mov eax,[rcx+08]
+"sekiro.exe"+C256D2: 89 42 08                    -  mov [rdx+08],eax
+// ---------- DONE INJECTING  ----------
+"sekiro.exe"+C256D5: 8B 41 0C                    -  mov eax,[rcx+0C]
+"sekiro.exe"+C256D8: 89 42 0C                    -  mov [rdx+0C],eax
+"sekiro.exe"+C256DB: C3                          -  ret 
+"sekiro.exe"+C256DC: CC                          -  int 3 
+"sekiro.exe"+C256DD: CC                          -  int 3 
+"sekiro.exe"+C256DE: CC                          -  int 3 
+"sekiro.exe"+C256DF: CC                          -  int 3 
+"sekiro.exe"+C256E0: 48 8B C1                    -  mov rax,rcx
+"sekiro.exe"+C256E3: C3                          -  ret 
+"sekiro.exe"+C256E4: CC                          -  int 3 
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry Color="20000000">
+      <Description>替换了 mov [rcx+10],al</Description>
+      <AddressString>sekiro.exe+BBC583</AddressString>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>0F</Byte>
+        <Byte>B6</Byte>
+        <Byte>02</Byte>
+      </Before>
+      <Actual>
+        <Byte>88</Byte>
+        <Byte>41</Byte>
+        <Byte>10</Byte>
+      </Actual>
+      <After>
+        <Byte>C3</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>-hp)share</Description>
+      <AddressString>sekiro.exe+BBF3BE</AddressString>
+      <Before>
+        <Byte>0F</Byte>
+        <Byte>4F</Byte>
+        <Byte>C1</Byte>
+        <Byte>8B</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>89</Byte>
+        <Byte>83</Byte>
+        <Byte>30</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+        <Byte>7F</Byte>
+        <Byte>1A</Byte>
+        <Byte>48</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry Color="20000000">
+      <Description>替换了 call sekiro.exe+C257B0</Description>
+      <AddressString>sekiro.exe+79E8E3</AddressString>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>D7</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>C8</Byte>
+        <Byte>6E</Byte>
+        <Byte>48</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>DF</Byte>
+        <Byte>41</Byte>
+        <Byte>2B</Byte>
+        <Byte>DC</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+  <Structures StructVersion="2">
+  </Structures>
+  <Comments>0000000000000000
+00007fffffffffff
+00007FF4FFFFFFFF
+</Comments>
+</CheatTable>
